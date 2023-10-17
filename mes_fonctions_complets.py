@@ -41,9 +41,6 @@ def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme 
     
     return objet_rotation
 
-# fonction pour répétition circulaire
-# nb_rep correspond au nombre de répétitions souhaité, doit être int
-
 def fusion(objets): # objets doit être une liste de listes, avec chaque objet à fusionner comme étant une élément-liste tel que [F, V, N]
     objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
@@ -61,8 +58,11 @@ def fusion(objets): # objets doit être une liste de listes, avec chaque objet �
 
     return objets_fusionnes
 
+# fonction pour répétition circulaire
+# nb_rep correspond au nombre de répétitions souhaité, doit être int
+
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
-    objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
+    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     objet[1] = homothetie(objet[1], grandissement)
     objet[1] = translation(objet[1], deplacement)
@@ -71,7 +71,6 @@ def rep_circulaire(objet, nb_rep, deplacement, grandissement):
         R = Rz(theta) # matrice de rotation par rapport à l'axe des z
         
         objet_i = objet # créations de arrays F, V et N pour l'itération i
-        
         
         objet_final[0] = np.vstack((objet_final[0], objet_i[0] + nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
         objet_final[1] = np.vstack((objet_final[1], objet_i[1].dot(R))) # Rotation et concaténation
@@ -141,20 +140,20 @@ def affinite_vectorielle(F,V,N,a,b,c):
     N1=CalculNormal( F1, V1 )
     return F1, V1, N1
 
-
 def repetition_rectiligne(objet, repetition, espacement):
-    F_final, V_final, N_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
+    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
     F, V, N = objet[0], objet[1], objet[2]
-    nb_vertex = len(V) # on détermine le nombre de vertex de l'objet original
+    nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     
     for i  in range (repetition):
-        F_i, V_i, N_i = F, V, N # créations de arrays F, V et N pour l'itération i
-        V_i[ :,0]=V_i[ :,0]+espacement
-        F_final = np.vstack((F_final, F_i+nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
-        V_final = np.vstack((V_final, V_i)) # concaténation
-        N_final = np.vstack((N_final, N_i)) # concaténation
+        F_i, V_i, N_i = objet[0], objet[1], objet[2] # créations de arrays F, V et N pour l'itération i
+        V_i[ :,0] = V_i[ :,0] + espacement
         
-    return F_final, V_final, N_final
+        objet_final[0] = np.vstack((objet_final[0], F_i+nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
+        objet_final[1] = np.vstack((objet_final[1], V_i)) # concaténation
+        objet_final[2] = np.vstack((objet_final[2], N_i)) # concaténation
+        
+    return objet_final
 
 def centrer(objet):
     F, V, N = objet[0], objet[1], objet[2]

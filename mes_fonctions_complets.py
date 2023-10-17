@@ -39,7 +39,7 @@ def rotation(objet, angle_rotation, axe_rotation): # axe de rotation de la forme
     elif axe_rotation==[0, 0, 1]:
         R=Rz(angle_rotation)
         
-    objet_rotation = objet[0], objet[1].dot(R), objet[2].dot(R)
+    objet_rotation = [objet[0], objet[1].dot(R), objet[2].dot(R)]
     
     return objet_rotation
 
@@ -53,11 +53,16 @@ def affinite_vectorielle(objet, a, b, c):
     objet_final = [F, V, N]
     return objet_final
 
+
+
+
+
+
 # fonction pour fusionner, objets contient tous les objets individuels à fusionner
 def fusion(objets): 
     objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
-    
+    print(objets_fusionnes)
     for objet_individuel in objets: # on prend F, V et N de chaque objet à fusionner
         if i == 0:
             objets_fusionnes[0] = np.vstack((objets_fusionnes[0], objet_individuel[0])) # ajout du premier objet à la matrice vide objets_fusionnes[0]
@@ -70,6 +75,11 @@ def fusion(objets):
         i += 1
 
     return objets_fusionnes
+
+
+
+
+
 
 # fonction pour répétition circulaire, nb_rep correspond au nombre de répétitions souhaité (doit être int)
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
@@ -135,7 +145,7 @@ def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central):
         
     positionx = np.array([1])
     positiony = np.array([1])
-    positionz = np.zeros(nb_prep)
+    positionz = np.zeros(nb_rep)
     for o in range(1, nb_rep):
         x = res[o+1]*pmmptot[o]
         positionx = np.hstack([positionx,x])

@@ -5,36 +5,32 @@ Created on Thu Oct  5 20:32:29 2023
 @author: flore
 """
 
+# NOTE: Pour toutes les fonctions, on prend en entrée des objets sous forme de tuples (F, V, N) et on retourne les objets modifiés sous la même forme.
+
 import numpy as np
 from MEC1315_STL import *
 
-# fonction pour homothétie
-# facteur doit être float
-# objet est une tuple
-
-def homothetie(objet, facteur):
-    objet[1] = facteur * objet[1]
+# fonction pour homothétie, grandissement doit être float
+def homothetie(objet, grandissement):
+    objet[1] = grandissement * objet[1]
     return objet
 
-# fonction pour translation
-# déplacement doit être array de format [1,3]
-# objet est une tuple
-
+# fonction pour translation, déplacement doit être array de format [1,3]
 def translation(objet, deplacement):
     objet[1] = objet[1] + deplacement
     return objet
-
+    
+# fonction pour centrer un objet en x et en y et en z=0
 def centrer(objet):
     F, V, N = objet[0], objet[1], objet[2]
-    centre_x=(min(V[:,0])+max(V[:,0]))/2
-    centre_y=(min(V[:,1])+max(V[:,1]))/2
-    min_z=min(V[:,2])
+    centre_x = (min(V[:,0]) + max(V[:,0]))/2
+    centre_y = (min(V[:,1]) + max(V[:,1]))/2
+    min_z = min(V[:,2])
     objet_centre = translation(objet, np.array([-centre_x,-centre_y,-min_z]))
     return objet_centre
 
-# objet est une tuple
-
-def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme [1, 0, 0] et angle de rotation en radians
+# fonction de rotation
+def rotation(objet, angle_rotation, axe_rotation): # axe de rotation de la forme [1, 0, 0] et angle de rotation en radians
     F, V, N = objet[0], objet[1], objet[2]
     
     if axe_rotation==[1, 0, 0]:
@@ -44,21 +40,31 @@ def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme 
     elif axe_rotation==[0, 0, 1]:
         R=Rz(angle_rotation)
         
-    F, V, N = F, V.dot(R), N.dot(R)
-    objet_rotation = F, V, N
+    objet_rotation = F, V.dot(R), N.dot(R)
     
     return objet_rotation
 
-def fusion(objets): # objets doit être une liste de listes, avec chaque objet à fusionner comme étant une élément-liste tel que [F, V, N]
+# change dimension d'un objet en appliquant les coefficients a, b et c sur les composantes x, y et z
+def affinite_vectorielle(objet, a, b, c):
+    F, V, N = objet[0].copy(), objet[1].copy(), objet[2].copy()
+    V[ :,0] = V[ :,0]*a
+    V[ :,1] = V[ :,1]*b
+    V[ :,2] = V[ :,2]*c
+    N = CalculNormal( F, V )
+    objet_final = [F, V, N]
+    return objet_final
+
+# fonction pour fusionner, objets contient tous les objets individuels à fusionner
+def fusion(objets): 
     objets_fusionnes = np.empty([0,3]),np.empty([0,3]),np.empty([0,3]) # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
     
     for objet_individuel in objets: # on prend F, V et N de chaque objet à fusionner
         if i == 0:
-            objets_fusionnes[0] = np.vstack((objets_fusionnes[0], objet_individuel[0])) # ajout du premier objet à la matrice vide F_tot
+            objets_fusionnes[0] = np.vstack((objets_fusionnes[0], objet_individuel[0])) # ajout du premier objet à la matrice vide objets_fusionnes[0]
         else:
             nb_vertex = len(objets_fusionnes[1]) # on détermine le nombre de vertex total des objets déjà ''fusionnés''
-            objets_fusionnes[0] = np.vstack((objets_fusionnes[0], objet_individuel[0]+nb_vertex)) # concaténation et ajout de nb_vertex sur F_tot
+            objets_fusionnes[0] = np.vstack((objets_fusionnes[0], objet_individuel[0]+nb_vertex)) # concaténation et ajout de nb_vertex sur objets_fusionnes[0]
             
         objets_fusionnes[1] = np.vstack((objets_fusionnes[1], objet_individuel[1])) # concaténation
         objets_fusionnes[2] = np.vstack((objets_fusionnes[2], objet_individuel[2])) # concaténation
@@ -66,9 +72,7 @@ def fusion(objets): # objets doit être une liste de listes, avec chaque objet �
 
     return objets_fusionnes
 
-# fonction pour répétition circulaire
-# nb_rep correspond au nombre de répétitions souhaité, doit être int
-
+# fonction pour répétition circulaire, nb_rep correspond au nombre de répétitions souhaité (doit être int)
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
     objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
@@ -80,31 +84,22 @@ def rep_circulaire(objet, nb_rep, deplacement, grandissement):
         
         objet_i = objet # créations de arrays F, V et N pour l'itération i
         
-        objet_final[0] = np.vstack((objet_final[0], objet_i[0] + nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
+        objet_final[0] = np.vstack((objet_final[0], objet_i[0] + nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur objet_i[0]
         objet_final[1] = np.vstack((objet_final[1], objet_i[1].dot(R))) # Rotation et concaténation
         objet_final[2] = np.vstack((objet_final[2], objet_i[2].dot(R))) # Rotation concaténation
         
     return objet_final
-
-#Change dimension d'un objet en appliquant un coefficient a, b et c sur les composantes x, y et z
-def affinite_vectorielle(objet, a, b, c):
-    F, V, N = objet[0].copy(), objet[1].copy(), objet[2].copy()
-    V[ :,0]=V[ :,0]*a
-    V[ :,1]=V[ :,1]*b
-    V[ :,2]=V[ :,2]*c
-    N=CalculNormal( F, V )
-    objet_final = [F, V, N]
-    return objet_final
-
-def repetition_rectiligne(objet, repetition, espacement):
+    
+# fonction pour répétition rectiligne
+def repetition_rectiligne(objet, nb_rep, espacement):
     objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     
-    for i  in range (repetition):
+    for i  in range (nb_rep):
         F_i, V_i, N_i = objet[0], objet[1], objet[2] # créations de arrays F, V et N pour l'itération i
         V_i[ :,0] = V_i[ :,0] + espacement
         
-        objet_final[0] = np.vstack((objet_final[0], F_i+nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
+        objet_final[0] = np.vstack((objet_final[0], F_i + nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
         objet_final[1] = np.vstack((objet_final[1], V_i)) # concaténation
         objet_final[2] = np.vstack((objet_final[2], N_i)) # concaténation
         
@@ -165,102 +160,49 @@ def repéperso(planète_total, planete_répliquer, planète_centrale, grandissem
     F_final,V_final,N_final = fusion(objet)
     return F_final,V_final,N_final
 
-def fonction_drapeau(cylindre,triangle,grandissement):
-    #Cylindre et triangle
-    fc,vc,nc = LireSTL(cylindre)
-    ft,vt,nt= LireSTL(triangle)
-    #dimension cylindre
-    vc[:,0]=homothetie(vc[:,0], 0.5)
-    vc[:,2]=homothetie(vc[:,2], 3)
-    vc[:,1]=homothetie(vc[:,1], 0.5)
-    #dimension triangle
-    vt[:,1]=homothetie(vt[:,1], 6)
-    vt[:,2]=homothetie(vt[:,2], 4)
-    vt=homothetie(vt, 0.15)
-
-    #Placer le triangle en haut et à gauche du cylindre
-    ycmax=max(vc[:,1])
-    vt[:,1]=vt[:,1]+ycmax
-    zt=max(vt[:,2])-min(vt[:,2])
-    ht=max(vc[:,2])-zt
-    vt[:,2]=vt[:,2]+ht
-
-
-    objet=[[fc,vc,nc],[ft,vt,nt]]
-    f,v,n=fusion(objet)
-    v=homothetie(v, grandissement)
-    return f,v,n
-
-def fonction_satellite(cube,x,y,grandissement):
-    f0,v0,n0=LireSTL(cube)
-
-    rectangle1=affinite_vectorielle(f0,v0,n0, 0.5, 1.5, 0.2)
-    rectangles = repetition_rectiligne(rectangle1, 4, 1)
-
-    f1,v1,n1=centrer(rectangles) #les 4 panneaux supérieur de l'aile
-    v1=translation(v1,[0,0.9,0])
-    Ailesup= [f1,v1,n1]
+def fonction_drapeau(cylindre, triangle, grandissement):
+    # dimensions
+    cylindre = affinite_vectorielle(cylindre, 0.5, 0.5, 3)
+    triangle = affinite_vectorielle(triangle, 1, 6, 4)
+    triangle = homothetie(triangle, 0.15)
     
-    f2,v2,n2=centrer(affinite_vectorielle(f0,v0,n0, 5, 0.4, 0.5)) #centre de l'aile
-    v2=translation(v2,[0.5,0,-0.2])
-    Ailemid= [f2,v2,n2]
-
-    f3,v3,n3=centrer(rectangles) #les 4 panneaux inférieur de l'aile
-    v3=translation(v3,[0,-0.9,0])
-    Aileinf=[f3,v3,n3]
-
-    f4,v4,n4= fusion((Ailesup,Ailemid,Aileinf)) #une des ailes du satellite
-    aile1=[f4,v4,n4] 
-
-    v5=translation(v4.dot(Rz(np.pi)),[7,0,0])  #la deuxième aile du satellite
-    aile2=[f4,v5,n4.dot(Rz(np.pi))]
-
-    f6,v6,n6=centrer(affinite_vectorielle(f0,v0,n0, 2, 2.5,2)) #Centre satellite
-    v6=translation(v6, [3.5,0,-0.8])
-    centre=[f6,v6,n6]
-
-    f7,v7,n7=fusion((aile1,aile2,centre))
-    v7=homothetie(v7, grandissement)
-    v7[:,0],v7[:,1]=v7[:,0]+x,v7[:,1]+y
-    return f7,v7,n7
-
-def minion_drapeau(fichier_drapeau, fichier_minion, grandissement): # fusion de l'objet drapeau et l'objet minion
-    f1, v1, n1 = fichier_drapeau
-    nv1 = len(v1)
+    # Placer le triangle en haut et à gauche du cylindre
+    deplacement_en_y = max(cylindre[1][:,1])
+    deplacement_en_z = max(cylindre[1][:,2])-(max(triangle[1][:,2])-min(triangle[1][:,2]))
+    deplacement_triangle = np.array([0, deplacement_en_y, deplacement_en_z])
+    triangle = translation(triangle, deplacement_triangle)
     
-    # coïncidence avec l'origine de l'objet 1
+    drapeau = fusion((cylindre, triangle))
+    drapeau = homothetie(drapeau, grandissement)
     
-    centre_x=(min(v1[:,0])+max(v1[:,0]))/2
-    centre_y=(min(v1[:,1])+max(v1[:,1]))/2
-    min_z=min(v1[:,2])
-    v1=v1+np.array([-centre_x,-centre_y,-min_z])
-    
-    
+    return drapeau
 
-    v1 = translation(v1, [0,-2,0]) # translation de 2 unités vers les y négatif
+def fonction_satellite(cube, x, y, grandissement):
+    rectangles = repetition_rectiligne(affinite_vectorielle(cube, 0.5, 1.5, 0.2), 4, 1)
 
-    v1 = translation(v1, [0,0,-1]) # translation de 1 unitées vers les z négatifs
+    aile_sup = translation(centrer(rectangles), np.array([0, 0.9, 0])) # les 4 panneaux supérieurs de l'aile
+    aile_mid = centrer(affinite_vectorielle(cube, 5, 0.4, 0.5)) # centre de l'aile
+    aile_mid = translation(aile_mid,np.array([0.5, 0, -0.2]))
+    aile_inf = translation(centrer(rectangles), np.array([0, -0.9, 0])) # les 4 panneaux inférieurs de l'aile
 
+    aile_1 = fusion((aile_sup, aile_mid, aile_inf)) # une des ailes du satellite
+    aile_2 = translation(rotation(aile_1, np.pi, [0, 0, 1]),np.array([7, 0, 0]))  # la deuxième aile du satellite
+    centre = centrer(affinite_vectorielle(cube, 2, 2.5, 2)) # Centre satellite
+    centre = translation(centre, np.array([3.5, 0, -0.8]))
 
+    satellite = homothetie(fusion((aile_1, aile_2, centre)), grandissement)
+    satellite = translation(satellite, np.array([x, y, 0]))
+    
+    return satellite
 
-    f2, v2, n2 = LireSTL(fichier_minion) # importation de l'objet (2) minion
+def minion_drapeau(drapeau, minion, grandissement): # fusion de l'objet drapeau et l'objet minion
+    drapeau = centrer(drapeau)
+    drapeau = translation(drapeau, np.array([0, -2, 0])) # translation de 2 unités vers les y négatifs
+    drapeau = translation(drapeau, np.array([0, 0, -1])) # translation de 1 unitées vers les z négatifs
+    minion = centrer(homothetie(minion, grandissement))
+    minion_drapeau = fusion((drapeau, minion)) # fusion des deux objets et création du fichier "minion_drapeau.stl"
     
-    nv2 = len(v2)
-    v2= homothetie(v2, grandissement)
-    #coïcidence avec l'origine de l'objet 2
-
-    centre_x=(min(v2[:,0])+max(v2[:,0]))/2
-    centre_y=(min(v2[:,1])+max(v2[:,1]))/2
-    min_z=min(v2[:,2])
-    v2=v2+np.array([-centre_x,-centre_y,-min_z])
-    
-    
-    # fusion des deux objets et création du fichier "minion_drapeau.stl"
-    
-    minion_drapeau = fusion([[f1,v1,n1],[f2, v2, n2]])
-    ff,vf,nf=minion_drapeau
-    
-    return ff,vf,nf
+    return minion_drapeau
     
     
 def planete_colonisee(fichier_minion_drapeau, fichier_planete): # fusion de l'objet minion_drapeau et de la planète

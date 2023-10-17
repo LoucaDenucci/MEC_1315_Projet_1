@@ -10,12 +10,12 @@ import numpy as np
 from MEC1315_STL import *
 from mes_fonctions_complets import *
 #Créer  liste
-planete=List(LireSTL('planete.stl'))
-minion=List(LireSTL('Minion2.stl'))
-cylindre=List(LireSTL('cylindre.stl'))
-triangle=List(LireSTL('triangle.stl'))
-mini_planete=List(LireSTL('mini_planete.stl'))
-cube=List(LireSTL('cube.stl'))
+planete=list(LireSTL('planete.stl'))
+minion=list(LireSTL('Minion2.stl'))
+cylindre=list(LireSTL('cylindre.stl'))
+triangle=list(LireSTL('triangle.stl'))
+mini_planete=list(LireSTL('mini_planete.stl'))
+cube=list(LireSTL('cube.stl'))
 
 
 #Anneau

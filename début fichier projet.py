@@ -14,9 +14,9 @@ from mes_fonctions_complets import *
 
 
 #Anneau
-Anneau_p=rep_circulaire2('mini_planete.stl', 120, 135, 0, 0, 1/50) #Répétition circulaire
-Anneau_s1=rep_circulaire2('mini_planete.stl', 120, 120, 0, 10, 1/50)
-Anneau_s2=rep_circulaire2('mini_planete.stl', 120, 120, 0, -10, 1/50)
+Anneau_p=rep_circulaire('mini_planete.stl', 120, 135, 0, 0, 1/50) #Répétition circulaire
+Anneau_s1=rep_circulaire('mini_planete.stl', 120, 120, 0, 10, 1/50)
+Anneau_s2=rep_circulaire('mini_planete.stl', 120, 120, 0, -10, 1/50)
 
 
 

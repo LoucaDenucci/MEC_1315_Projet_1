@@ -5,7 +5,7 @@ Created on Thu Oct  5 20:32:29 2023
 @author: flore
 """
 
-# NOTE: Pour toutes les fonctions, on prend en entrée des objets sous forme de tuples (F, V, N) et on retourne les objets modifiés sous la même forme.
+# NOTE: Pour toutes les fonctions, on prend en entrée des objets sous forme de listes [F, V, N] et on retourne les objets modifiés sous la même forme.
 
 import numpy as np
 from MEC1315_STL import *
@@ -40,7 +40,7 @@ def rotation(objet, angle_rotation, axe_rotation): # axe de rotation de la forme
     elif axe_rotation==[0, 0, 1]:
         R=Rz(angle_rotation)
         
-    objet_rotation = F, V.dot(R), N.dot(R)
+    objet_rotation = [F, V.dot(R), N.dot(R)]
     
     return objet_rotation
 
@@ -56,7 +56,7 @@ def affinite_vectorielle(objet, a, b, c):
 
 # fonction pour fusionner, objets contient tous les objets individuels à fusionner
 def fusion(objets): 
-    objets_fusionnes = np.empty([0,3]),np.empty([0,3]),np.empty([0,3]) # création des arrays F, V et N finaux
+    objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
     
     for objet_individuel in objets: # on prend F, V et N de chaque objet à fusionner
@@ -74,7 +74,7 @@ def fusion(objets):
 
 # fonction pour répétition circulaire, nb_rep correspond au nombre de répétitions souhaité (doit être int)
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
-    objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
+    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     objet = homothetie(objet, grandissement)
     objet = translation(objet, deplacement)
@@ -92,7 +92,7 @@ def rep_circulaire(objet, nb_rep, deplacement, grandissement):
     
 # fonction pour répétition rectiligne
 def repetition_rectiligne(objet, nb_rep, espacement):
-    objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
+    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     
     for i  in range (nb_rep):
@@ -107,58 +107,53 @@ def repetition_rectiligne(objet, nb_rep, espacement):
 
 # HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
-def repéperso(planète_total, planete_répliquer, planète_centrale, grandissement_centrale): 
-    f,v,n=planete_répliquer  
-    fc,vc,nc=planète_centrale
-    nbre=planète_total
-    vc = homothetie(vc, grandissement_centrale)
-    objet=[[fc,vc,nc]]
-    #grandissement planète secondaire
-    m=nbre+1
-    gi=1/m
+def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central): 
+    objets = [homothetie(objet_central, grandissement_central)]
     
     #suite de fibonacci dans les 4 quadrants
-    i=0
-    j=1
-    a=0
-    res=np.array([0])
+    i = 0
+    j = 1
+    a = 0
+    res = np.array([0])
     
-    ppmm=np.array([1,1,-1,-1])
-    ppmmtot=np.array([1,1,-1,-1])
-    pmmp=np.array([1,-1,-1,1])
-    pmmptot=np.array([1,-1,-1,1])
-    #Matrice pour créer la rotation dans les 4 quadrants
-    while len(pmmptot)<nbre: #Pour créer la suite +--+ pour x
-        pmmptot=np.hstack([pmmptot,pmmp])
-    while len(ppmmtot)<nbre: #Pour créer la suite ++-- pour y
-        ppmmtot=np.hstack([ppmmtot,ppmm])
-   #Suite de fibonnacci     
-    while a<nbre: 
-        k=np.array([i+j])
-        res=np.hstack([res,k])
-        j=i
-        i=res[-1]
-        a+=1
+    ppmm = np.array([1,1,-1,-1])
+    ppmmtot = np.array([1,1,-1,-1])
+    pmmp = np.array([1,-1,-1,1])
+    pmmptot = np.array([1,-1,-1,1])
+    
+    # matrice pour créer la rotation dans les 4 quadrants
+    while len(pmmptot) < nb_rep: #Pour créer la suite +--+ pour x
+        pmmptot = np.hstack([pmmptot,pmmp])
+    while len(ppmmtot) < nb_rep: #Pour créer la suite ++-- pour y
+        ppmmtot = np.hstack([ppmmtot,ppmm])
         
-    positionx=np.array([1])
-    positiony=np.array([1])
-    positionz=np.zeros(nbre)
-    for o in range(1,nbre):
-        x=res[o+1]*pmmptot[o]
-        positionx=np.hstack([positionx,x])
-        y=res[o+1]*ppmmtot[o]
-        positiony=np.hstack([positiony,y])
-    position=np.vstack([positionx, positiony,positionz]).T
-    p=position
-    #Placement des planètes sur la suite de fibonacci
-    for i in range(nbre):
-        f1,n1=f,n
+   # suite de fibonnacci     
+    while a < nb_rep: 
+        k = np.array([i+j])
+        res = np.hstack([res,k])
+        j = i
+        i = res[-1]
+        a += 1
         
-        v1=v*[i/m]
-        v1=v1+110*p[i] #comme la suite est minime comparer à la taille des planètes, grandissement de la translation de 200
-        objet.append([f1,v1,n1])
-    F_final,V_final,N_final = fusion(objet)
-    return F_final,V_final,N_final
+    positionx = np.array([1])
+    positiony = np.array([1])
+    positionz = np.zeros(nb_prep)
+    for o in range(1, nb_rep):
+        x = res[o+1]*pmmptot[o]
+        positionx = np.hstack([positionx,x])
+        y = res[o+1]*ppmmtot[o]
+        positiony = np.hstack([positiony,y])
+    position = np.vstack([positionx, positiony, positionz]).T
+
+    # placement des planètes sur la suite de fibonacci
+    for i in range(nb_rep):
+        objet_i = autre_objet
+        
+        objet_i[1] = autre_objet[1]*[i/(nb_rep+1)]
+        objet_i[1] = objet_i[1]+110*position[i] # comme la suite est minime comparer à la taille des planètes, grandissement de la translation de 200
+        objets.append([objet_i])
+    rep_finale = fusion(objets)
+    return rep_finale
 
 def fonction_drapeau(cylindre, triangle, grandissement):
     # dimensions

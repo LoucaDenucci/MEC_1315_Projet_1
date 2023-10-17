@@ -205,24 +205,9 @@ def minion_drapeau(drapeau, minion, grandissement): # fusion de l'objet drapeau 
     return minion_drapeau
     
     
-def planete_colonisee(fichier_minion_drapeau, fichier_planete): # fusion de l'objet minion_drapeau et de la planète
-                                                                # à coloniser
-
-    f1, v1, n1 = fichier_minion_drapeau # importation de l'objet (1) minion_drapeau
-    nv1 = len(v1)
+def planete_colonisee(minion_drapeau, planete): # fusion de l'objet minion_drapeau et de la planète à coloniser
+    minion_drapeau = homothetie(minion_drapeau, 20)
+    planete = translation(planete, np.array([0, 0, -(max(planete[1][:,2])-min(planete[1][:,2]))/2])) # translation vers z négatifs de la longueur du rayon
+    planete_colonisee = fusion((minion_drapeau, planete)) # fusion des deux objets et création du fichier "planete_colonisee.stl"
     
-
-    v1 = homothetie(v1, 20) # homotéthie de l'objet 1
-    
-
-    f2, v2, n2 = LireSTL(fichier_planete) # importation de l'objet (2) planète
-    nv2 = len(v2) 
-    
-
-    v2 = translation(v2, [0,0,-(max(v2[:,2])-min(v2[:,2]))/2]) # translation vers z négatif de la longueur du rayon<
-    
-    # fusion des deux objets et création du fichier "planete_colonisee.stl"
-    
-    planete_colonisee = fusion([[f1,v1,n1],[f2, v2, n2]])
-    ff,vf,nf=planete_colonisee
-    return ff,vf,nf
+    return planete_colonisee

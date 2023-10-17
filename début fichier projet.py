@@ -25,7 +25,7 @@ drapeau_minion=minion_drapeau(drapeau, 'minion.stl')
 planete_col=planete_colonisee(drapeau_minion, 'planete.stl')
 #Satellite
 satellite=fonction_satellite('cube.stl', -300, 300,10) #Répétiton lnéaire dans la fonction
-
+satellite_rot=rotation(satellite,np.pi/4,[1,0,0])
 #Galaxy 
 galaxy=repéperso(6, planete_col, 'planete.stl', 2/3) #Répétition selon la suite de fibonacci
 

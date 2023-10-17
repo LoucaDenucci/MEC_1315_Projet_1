@@ -10,6 +10,7 @@ from MEC1315_STL import *
 
 # fonction pour homothétie
 # facteur doit être float
+# objet est une liste
 
 def homothetie(objet, facteur):
     objet[1] = facteur * objet[1]
@@ -17,27 +18,34 @@ def homothetie(objet, facteur):
 
 # fonction pour translation
 # déplacement doit être array de format [1,3]
+# objet est une liste
 
 def translation(objet, deplacement):
     objet[1] = objet[1] + deplacement
     return objet
+    
+# objet est une liste
 
-def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme [1, 0, 0] et angle de rotation en radian
+def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme [1, 0, 0] et angle de rotation en radians
     F, V, N = objet[0], objet[1], objet[2]
+    
     if axe_rotation==[1, 0, 0]:
         R=Rx(angle_rotation)
     elif axe_rotation==[0, 1, 0]:
         R=Ry(angle_rotation)
     elif axe_rotation==[0, 0, 1]:
         R=Rz(angle_rotation)
-    F, V, N=F, V.dot(R), N.dot(R)
-    return F,V,N
+        
+    F, V, N = F, V.dot(R), N.dot(R)
+    objet_rotation = [F, V, N]
+    
+    return objet_rotation
 
 # fonction pour répétition circulaire
 # nb_rep correspond au nombre de répétitions souhaité, doit être int
 
 def fusion(objets): # objets doit être une liste de listes, avec chaque objet à fusionner comme étant une élément-liste tel que [F, V, N]
-    objets_fusionnes =np.empty([0,3]),np.empty([0,3]),np.empty([0,3]) # création des arrays F, V et N finaux
+    objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
     
     for objet_individuel in objets: # on prend F, V et N de chaque objet à fusionner

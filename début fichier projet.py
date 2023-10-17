@@ -10,32 +10,32 @@ import numpy as np
 from MEC1315_STL import *
 from mes_fonctions_complets import *
 #Créer  liste
-planete=Lirestl('planete.stl')
-minion=Lirestl('Minion2.stl')
-cylindre=Lirestl('cylindre.stl')
-triangle=Lirestl('triangle.stl,)
-mini_planete=Lirestl('mini_planete.stl')
-cube=Lirestl('cube.stl')
+planete=List(LireSTL('planete.stl'))
+minion=List(LireSTL('Minion2.stl'))
+cylindre=List(LireSTL('cylindre.stl'))
+triangle=List(LireSTL('triangle.stl'))
+mini_planete=List(LireSTL('mini_planete.stl'))
+cube=List(LireSTL('cube.stl'))
 
 
 #Anneau
-Anneau_p=rep_circulaire(mini_planete, 120, 135, 0, 0, 1/50) #Répétition circulaire
-Anneau_s1=rep_circulaire(mini_planete, 120, 120, 0, 10, 1/50)
-Anneau_s2=rep_circulaire(mini_planete, 120, 120, 0, -10, 1/50)
+Anneau_p=rep_circulaire(mini_planete, 120, [135, 0, 0], 1/50) #Répétition circulaire
+Anneau_s1=rep_circulaire(mini_planete, 120, [120, 0, 10], 1/50)
+Anneau_s2=rep_circulaire(mini_planete, 120, [120, 0, -10], 1/50)
 
 
 
 #Planète colonisée
 drapeau=fonction_drapeau(cylindre, triangle, 1)
-drapeau_minion=minion_drapeau(drapeau, minion)
+drapeau_minion=minion_drapeau(drapeau, minion,20)
 planete_col=planete_colonisee(drapeau_minion, planete)
 #Satellite
-satellite=fonction_satellite(cube, -300, 300,10) #Répétiton lnéaire dans la fonction
+satellite=fonction_satellite(cube, -300, 300,10) #Répétiton linéaire dans la fonction
 satellite_rot=rotation(satellite,np.pi/4,[1,0,0])
 #Galaxy 
-galaxy=repéperso(6, planete_col, planete, 2/3) #Répétition selon la suite de fibonacci
+galaxy=rep_perso(6, planete_col, planete, 2/3) #Répétition selon la suite de fibonacci
 
 #fusion et export du fichier STL
-scene=fusion((Anneau_p,Anneau_s1,Anneau_s2,galaxy,satellite))
+scene=fusion((Anneau_p,Anneau_s1,Anneau_s2,galaxy,satellite_rot))
 f,v,n=scene[0],scene[1],scene[2]
 EcrireSTLASCII('scene_final_XX.stl', f, v, n)

@@ -62,7 +62,6 @@ def affinite_vectorielle(objet, a, b, c):
 def fusion(objets): 
     objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
-    print(objets_fusionnes)
     for objet_individuel in objets: # on prend F, V et N de chaque objet à fusionner
         if i == 0:
             objets_fusionnes[0] = np.vstack((objets_fusionnes[0], objet_individuel[0])) # ajout du premier objet à la matrice vide objets_fusionnes[0]

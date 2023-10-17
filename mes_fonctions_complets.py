@@ -23,7 +23,15 @@ def homothetie(objet, facteur):
 def translation(objet, deplacement):
     objet[1] = objet[1] + deplacement
     return objet
-    
+
+def centrer(objet):
+    F, V, N = objet[0], objet[1], objet[2]
+    centre_x=(min(V[:,0])+max(V[:,0]))/2
+    centre_y=(min(V[:,1])+max(V[:,1]))/2
+    min_z=min(V[:,2])
+    objet_centre = translation(objet, np.array([-centre_x,-centre_y,-min_z]))
+    return objet_centre
+
 # objet est une liste
 
 def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme [1, 0, 0] et angle de rotation en radians
@@ -64,8 +72,8 @@ def fusion(objets): # objets doit être une liste de listes, avec chaque objet �
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
     objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
-    objet[1] = homothetie(objet[1], grandissement)
-    objet[1] = translation(objet[1], deplacement)
+    objet = homothetie(objet, grandissement)
+    objet = translation(objet, deplacement)
     for i in range(nb_rep):
         theta = 2*np.pi/nb_rep*i # on trouve l'angle pour la répétition i
         R = Rz(theta) # matrice de rotation par rapport à l'axe des z
@@ -78,7 +86,7 @@ def rep_circulaire(objet, nb_rep, deplacement, grandissement):
         
     return objet_final
 
-def repéperso(planète_total,planete_répliquer,planète_centrale,grandissement_centrale): 
+def repéperso(planète_total, planete_répliquer, planète_centrale, grandissement_centrale): 
     f,v,n=planete_répliquer  
     fc,vc,nc=LireSTL(planète_centrale)
     nbre=planète_total
@@ -131,7 +139,7 @@ def repéperso(planète_total,planete_répliquer,planète_centrale,grandissement
     F_final,V_final,N_final = fusion(objet)
     return F_final,V_final,N_final
 
-#Change dimension d'un objet en appliquant un coefficient a, b et c sur la composante x, y et z
+#Change dimension d'un objet en appliquant un coefficient a, b et c sur les composantes x, y et z
 def affinite_vectorielle(F,V,N,a,b,c):
     F1, V1, N1 = F.copy(), V.copy(), N.copy()
     V1[ :,0]=V1[ :,0]*a
@@ -154,14 +162,6 @@ def repetition_rectiligne(objet, repetition, espacement):
         objet_final[2] = np.vstack((objet_final[2], N_i)) # concaténation
         
     return objet_final
-
-def centrer(objet):
-    F, V, N = objet[0], objet[1], objet[2]
-    centre_x=(min(V[:,0])+max(V[:,0]))/2
-    centre_y=(min(V[:,1])+max(V[:,1]))/2
-    min_z=min(V[:,2])
-    V=translation(V, np.array([-centre_x,-centre_y,-min_z]))
-    return F, V, N
 
 def fonction_drapeau(cylindre,triangle,grandissement):
     #Cylindre et triangle

@@ -86,6 +86,16 @@ def rep_circulaire(objet, nb_rep, deplacement, grandissement):
         
     return objet_final
 
+#Change dimension d'un objet en appliquant un coefficient a, b et c sur les composantes x, y et z
+def affinite_vectorielle(objet, a, b, c):
+    F, V, N = objet[0].copy(), objet[1].copy(), objet[2].copy()
+    V[ :,0]=V[ :,0]*a
+    V[ :,1]=V[ :,1]*b
+    V[ :,2]=V[ :,2]*c
+    N=CalculNormal( F, V )
+    objet_final = [F, V, N]
+    return objet_final
+
 def repéperso(planète_total, planete_répliquer, planète_centrale, grandissement_centrale): 
     f,v,n=planete_répliquer  
     fc,vc,nc=LireSTL(planète_centrale)
@@ -138,15 +148,6 @@ def repéperso(planète_total, planete_répliquer, planète_centrale, grandissem
         objet.append([f1,v1,n1])
     F_final,V_final,N_final = fusion(objet)
     return F_final,V_final,N_final
-
-#Change dimension d'un objet en appliquant un coefficient a, b et c sur les composantes x, y et z
-def affinite_vectorielle(F,V,N,a,b,c):
-    F1, V1, N1 = F.copy(), V.copy(), N.copy()
-    V1[ :,0]=V1[ :,0]*a
-    V1[ :,1]=V1[ :,1]*b
-    V1[ :,2]=V1[ :,2]*c
-    N1=CalculNormal( F1, V1 )
-    return F1, V1, N1
 
 def repetition_rectiligne(objet, repetition, espacement):
     objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux

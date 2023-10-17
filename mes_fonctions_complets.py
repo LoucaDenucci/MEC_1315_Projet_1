@@ -31,7 +31,6 @@ def centrer(objet):
 
 # fonction de rotation
 def rotation(objet, angle_rotation, axe_rotation): # axe de rotation de la forme [1, 0, 0] et angle de rotation en radians
-    F, V, N = objet[0], objet[1], objet[2]
     
     if axe_rotation==[1, 0, 0]:
         R=Rx(angle_rotation)
@@ -40,7 +39,7 @@ def rotation(objet, angle_rotation, axe_rotation): # axe de rotation de la forme
     elif axe_rotation==[0, 0, 1]:
         R=Rz(angle_rotation)
         
-    objet_rotation = [F, V.dot(R), N.dot(R)]
+    objet_rotation = objet[0], objet[1].dot(R), objet[2].dot(R)
     
     return objet_rotation
 
@@ -96,12 +95,11 @@ def repetition_rectiligne(objet, nb_rep, espacement):
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     
     for i  in range (nb_rep):
-        F_i, V_i, N_i = objet[0], objet[1], objet[2] # créations de arrays F, V et N pour l'itération i
-        V_i[ :,0] = V_i[ :,0] + espacement
+        objet[1][ :,0] = objet[1][ :,0] + espacement
         
-        objet_final[0] = np.vstack((objet_final[0], F_i + nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
-        objet_final[1] = np.vstack((objet_final[1], V_i)) # concaténation
-        objet_final[2] = np.vstack((objet_final[2], N_i)) # concaténation
+        objet_final[0] = np.vstack((objet_final[0], objet[0] + nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
+        objet_final[1] = np.vstack((objet_final[1], objet[1])) # concaténation
+        objet_final[2] = np.vstack((objet_final[2], objet[2])) # concaténation
         
     return objet_final
 

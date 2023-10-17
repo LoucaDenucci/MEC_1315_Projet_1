@@ -11,9 +11,9 @@ from MEC1315_STL import *
 # fonction pour homothétie
 # facteur doit être float
 
-def homothetie(V, facteur):
-    V = facteur * V
-    return V
+def homothetie(objet, facteur):
+    objet[1] = facteur * objet[1]
+    return objet
 
 # fonction pour translation
 # déplacement doit être array de format [1,3]

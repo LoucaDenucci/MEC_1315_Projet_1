@@ -10,7 +10,7 @@ from MEC1315_STL import *
 
 # fonction pour homothétie
 # facteur doit être float
-# objet est une liste
+# objet est une tuple
 
 def homothetie(objet, facteur):
     objet[1] = facteur * objet[1]
@@ -18,7 +18,7 @@ def homothetie(objet, facteur):
 
 # fonction pour translation
 # déplacement doit être array de format [1,3]
-# objet est une liste
+# objet est une tuple
 
 def translation(objet, deplacement):
     objet[1] = objet[1] + deplacement
@@ -32,7 +32,7 @@ def centrer(objet):
     objet_centre = translation(objet, np.array([-centre_x,-centre_y,-min_z]))
     return objet_centre
 
-# objet est une liste
+# objet est une tuple
 
 def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme [1, 0, 0] et angle de rotation en radians
     F, V, N = objet[0], objet[1], objet[2]
@@ -45,12 +45,12 @@ def rotation(objet, angle_rotation, axe_rotation): #axe de rotation de la forme 
         R=Rz(angle_rotation)
         
     F, V, N = F, V.dot(R), N.dot(R)
-    objet_rotation = [F, V, N]
+    objet_rotation = F, V, N
     
     return objet_rotation
 
 def fusion(objets): # objets doit être une liste de listes, avec chaque objet à fusionner comme étant une élément-liste tel que [F, V, N]
-    objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
+    objets_fusionnes = np.empty([0,3]),np.empty([0,3]),np.empty([0,3]) # création des arrays F, V et N finaux
     i = 0 # initialisation du compteur
     
     for objet_individuel in objets: # on prend F, V et N de chaque objet à fusionner
@@ -70,7 +70,7 @@ def fusion(objets): # objets doit être une liste de listes, avec chaque objet �
 # nb_rep correspond au nombre de répétitions souhaité, doit être int
 
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
-    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
+    objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
     nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
     objet = homothetie(objet, grandissement)
     objet = translation(objet, deplacement)
@@ -96,9 +96,25 @@ def affinite_vectorielle(objet, a, b, c):
     objet_final = [F, V, N]
     return objet_final
 
+def repetition_rectiligne(objet, repetition, espacement):
+    objet_final = np.empty([0,3]), np.empty([0,3]), np.empty([0,3]) # création des arrays F, V et N finaux
+    nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
+    
+    for i  in range (repetition):
+        F_i, V_i, N_i = objet[0], objet[1], objet[2] # créations de arrays F, V et N pour l'itération i
+        V_i[ :,0] = V_i[ :,0] + espacement
+        
+        objet_final[0] = np.vstack((objet_final[0], F_i+nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
+        objet_final[1] = np.vstack((objet_final[1], V_i)) # concaténation
+        objet_final[2] = np.vstack((objet_final[2], N_i)) # concaténation
+        
+    return objet_final
+
+# HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
 def repéperso(planète_total, planete_répliquer, planète_centrale, grandissement_centrale): 
     f,v,n=planete_répliquer  
-    fc,vc,nc=LireSTL(planète_centrale)
+    fc,vc,nc=planète_centrale
     nbre=planète_total
     vc = homothetie(vc, grandissement_centrale)
     objet=[[fc,vc,nc]]
@@ -148,21 +164,6 @@ def repéperso(planète_total, planete_répliquer, planète_centrale, grandissem
         objet.append([f1,v1,n1])
     F_final,V_final,N_final = fusion(objet)
     return F_final,V_final,N_final
-
-def repetition_rectiligne(objet, repetition, espacement):
-    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])] # création des arrays F, V et N finaux
-    F, V, N = objet[0], objet[1], objet[2]
-    nb_vertex = len(objet[1]) # on détermine le nombre de vertex de l'objet original
-    
-    for i  in range (repetition):
-        F_i, V_i, N_i = objet[0], objet[1], objet[2] # créations de arrays F, V et N pour l'itération i
-        V_i[ :,0] = V_i[ :,0] + espacement
-        
-        objet_final[0] = np.vstack((objet_final[0], F_i+nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur F_i
-        objet_final[1] = np.vstack((objet_final[1], V_i)) # concaténation
-        objet_final[2] = np.vstack((objet_final[2], N_i)) # concaténation
-        
-    return objet_final
 
 def fonction_drapeau(cylindre,triangle,grandissement):
     #Cylindre et triangle

@@ -24,7 +24,7 @@ def translation(objet, deplacement):
     
 # fonction pour centrer un objet en x et en y et en z=0
 def centrer(objet):
-    F, V, N = objet[0], objet[1], objet[2]
+    F, V, N = objet[0].copy(), objet[1].copy(), objet[2].copy()
     centre_x = (min(V[:,0]) + max(V[:,0]))/2
     centre_y = (min(V[:,1]) + max(V[:,1]))/2
     min_z = min(V[:,2])

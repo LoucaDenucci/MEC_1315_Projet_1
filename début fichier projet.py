@@ -37,12 +37,12 @@ deplacement_triangle = np.array([0, deplacement_en_y, deplacement_en_z])
 triangle = translation(triangle, deplacement_triangle)
     
 drapeau = fusion([cylindre, triangle])
-drapeau = homothetie(drapeau, 12)
-
+drapeau = homothetie(drapeau, 20)
+drapeau = rotation(drapeau, -np.pi/2, [0, 0, 1])
 
 # Minion et drapeau
 drapeau = centrer(drapeau)
-drapeau = translation(drapeau, np.array([35, -2, -1])) # translation de 2 unités vers les y négatifs et 1 unitées vers les z négatifs
+drapeau = translation(drapeau, np.array([50, -2, -4])) # translation
 minion = centrer(homothetie(minion, 1.25))
 minion_drapeau= fusion([drapeau, minion])
 

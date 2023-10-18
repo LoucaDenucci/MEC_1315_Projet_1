@@ -142,15 +142,12 @@ def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central):
         i = res[-1]
         a += 1
         
-    positionx = np.array([1])
-    positiony = np.array([1])
-    positionz = np.zeros(nb_rep)
+    position=np.zeros(3)
     for o in range(1, nb_rep):
         x = res[o+1]*pmmptot[o]
-        positionx = np.hstack([positionx,x])
         y = res[o+1]*ppmmtot[o]
-        positiony = np.hstack([positiony,y])
-    position = np.vstack([positionx, positiony, positionz]).T
+        z=0
+    position = np.vstack((position,[x,y,z])).T
 
     # placement des planètes sur la suite de fibonacci
     for i in range(nb_rep):

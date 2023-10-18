@@ -142,8 +142,7 @@ def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central):
          i = res[-1]
          a += 1
      
-
-        x,y,z=0,0,0
+    x,y,z=0,0,0
 
     for o in range(1, nb_rep):
         xi = res[o+1]*pmmptot[o]

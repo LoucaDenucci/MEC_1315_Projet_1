@@ -56,7 +56,7 @@ planete_colonisee = fusion([minion_drapeau, planete]) # fusion des deux objets e
 rectangles = repetition_rectiligne(affinite_vectorielle(cube, 0.5, 1.5, 0.2), 4, 1)
 
 aile_sup = centrer(rectangles) # les 4 panneaux supérieurs de l'aile
-aile_sup = translation(aile_sup, np.array([0, 9, 0]))
+aile_sup = translation(aile_sup, np.array([0, 0.9, 0]))
 aile_mid = centrer(affinite_vectorielle(cube, 5, 0.4, 0.5)) # centre de l'aile
 aile_mid = translation(aile_mid,np.array([0.5, 0, -0.2]))
 aile_inf = translation(centrer(rectangles), np.array([0, -0.9, 0])) # les 4 panneaux inférieurs de l'aile

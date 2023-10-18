@@ -12,13 +12,15 @@ from MEC1315_STL import *
 
 # fonction pour homothétie, grandissement doit être float
 def homothetie(objet, grandissement):
-    objet[1] = grandissement * objet[1]
-    return objet
+    objet_mod = objet.copy()
+    objet_mod[1] = grandissement * objet_mod[1]
+    return objet_mod
 
 # fonction pour translation, déplacement doit être array de format [1,3]
 def translation(objet, deplacement):
-    objet[1] = objet[1] + deplacement
-    return objet
+    objet_mod = objet.copy()
+    objet_mod[1] = objet_mod[1] + deplacement
+    return objet_mod
     
 # fonction pour centrer un objet en x et en y et en z=0
 def centrer(objet):

@@ -116,48 +116,57 @@ def repetition_rectiligne(objet, nb_rep, espacement):
 
 def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central): 
     objets = [homothetie(objet_central, grandissement_central)]
-    
+ 
     #suite de fibonacci dans les 4 quadrants
     i = 0
     j = 1
     a = 0
     res = np.array([0])
-    
+ 
     ppmm = np.array([1,1,-1,-1])
     ppmmtot = np.array([1,1,-1,-1])
     pmmp = np.array([1,-1,-1,1])
     pmmptot = np.array([1,-1,-1,1])
-    
-    # matrice pour créer la rotation dans les 4 quadrants
+ 
+     # matrice pour créer la rotation dans les 4 quadrants
     while len(pmmptot) < nb_rep: #Pour créer la suite +--+ pour x
-        pmmptot = np.hstack([pmmptot,pmmp])
+         pmmptot = np.hstack([pmmptot,pmmp])
     while len(ppmmtot) < nb_rep: #Pour créer la suite ++-- pour y
-        ppmmtot = np.hstack([ppmmtot,ppmm])
-        
-   # suite de fibonnacci     
+         ppmmtot = np.hstack([ppmmtot,ppmm])
+     
+    # suite de fibonnacci     
     while a < nb_rep: 
-        k = np.array([i+j])
-        res = np.hstack([res,k])
-        j = i
-        i = res[-1]
-        a += 1
-        
-    position=np.zeros(3)
-    for o in range(1, nb_rep):
-        x = res[o+1]*pmmptot[o]
-        y = res[o+1]*ppmmtot[o]
-        z=0
-    position = np.vstack((position,[x,y,z])).T
+         k = np.array([i+j])
+         res = np.hstack([res,k])
+         j = i
+         i = res[-1]
+         a += 1
+     
 
-    # placement des planètes sur la suite de fibonacci
+        x,y,z=0,0,0
+
+    for o in range(1, nb_rep):
+        xi = res[o+1]*pmmptot[o]
+        x=np.hstack((x,xi))
+        yi = res[o+1]*ppmmtot[o]
+        y=np.hstack((y,yi))
+        zi=0
+        z=np.hstack((z,zi))
+    position=np.vstack((x,y,z)).T
+
+     # placement des planètes sur la suite de fibonacci
+    objet_final = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])]
+    nb_vertex = len(autre_objet[1])
+    m=nb_rep+1
     for i in range(nb_rep):
-        objet_i = autre_objet
-        
-        objet_i[1] = autre_objet[1]*[i/(nb_rep+1)]
-        objet_i[1] = objet_i[1]+110*position[i] # comme la suite est minime comparer à la taille des planètes, grandissement de la translation de 200
-        objets.append([objet_i])
-    rep_finale = fusion(objets)
-    return rep_finale
+        objet=autre_objet
+    
+    
+     
+        objet_final[0] = np.vstack((objet_final[0], objet[0]+ nb_vertex*i)) # concaténation et ajout de nb_vertex*i sur objet_i[0]
+        objet_final[1] = np.vstack((objet_final[1], objet[1]*i/m + 110*position[i])) 
+        objet_final[2] = np.vstack((objet_final[2], objet[2])) 
+    return objet_final
 
 def fonction_drapeau(cylindre, triangle, grandissement):
     # dimensions

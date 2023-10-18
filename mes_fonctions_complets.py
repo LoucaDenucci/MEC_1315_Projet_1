@@ -55,11 +55,6 @@ def affinite_vectorielle(objet, a, b, c):
     objet_final = [F, V, N]
     return objet_final
 
-
-
-
-
-
 # fonction pour fusionner, objets contient tous les objets individuels à fusionner
 def fusion(objets): 
     objets_fusionnes = [np.empty([0,3]),np.empty([0,3]),np.empty([0,3])] # création des arrays F, V et N finaux
@@ -76,11 +71,6 @@ def fusion(objets):
         i += 1
 
     return objets_fusionnes
-
-
-
-
-
 
 # fonction pour répétition circulaire, nb_rep correspond au nombre de répétitions souhaité (doit être int)
 def rep_circulaire(objet, nb_rep, deplacement, grandissement):
@@ -113,8 +103,6 @@ def repetition_rectiligne(objet, nb_rep, espacement):
         objet_final[2] = np.vstack((objet_final[2], objet[2])) # concaténation
         
     return objet_final
-
-# HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 
 def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central): 
     objets = [homothetie(objet_central, grandissement_central)]

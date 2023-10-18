@@ -19,7 +19,7 @@ cube=list(LireSTL('cube.stl'))
 
 
 # Anneaux
-anneau_p = rep_circulaire(mini_planete, 120, [135, 0, 0], 1/50) # Répétition circulaire
+anneau_p = rep_circulaire(rotation(cylindre, np.pi/2,[1,0,0]), 150, np.array([135, 0, 0]), 7) # Répétition circulaire
 anneau_s1 = rep_circulaire(mini_planete, 120, [120, 0, 10], 1/50)
 anneau_s2 = rep_circulaire(mini_planete, 120, [120, 0, -10], 1/50)
 

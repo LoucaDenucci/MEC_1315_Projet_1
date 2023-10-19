@@ -104,6 +104,7 @@ def repetition_rectiligne(objet, nb_rep, espacement):
         
     return objet_final
 
+# fonction pour notre répétition personnalisée de la suite de Fibonacci
 def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central): 
     objets = [homothetie(objet_central, grandissement_central)]
  
@@ -156,6 +157,9 @@ def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central):
         objet_final[1] = np.vstack((objet_final[1], objet[1]*i/m + 110*position[i])) 
         objet_final[2] = np.vstack((objet_final[2], objet[2])) 
     return objet_final
+
+
+# fonction de répétition personnalisée en spirale
 def spirale_perso(mini_planete,nbre_planete,nbre_planete_secondaire):
     nb_rep=nbre_planete
     nb_seconde_planete=nbre_planete_secondaire
@@ -253,55 +257,3 @@ def spirale_perso(mini_planete,nbre_planete,nbre_planete_secondaire):
         mini_final[2] = np.vstack((mini_final[2], objet[2])) 
     mini_final=rotation(mini_final, 1/4*np.pi, [0,0,1])
     return mini_final
-
-def fonction_drapeau(cylindre, triangle, grandissement):
-    # dimensions
-    cylindre = affinite_vectorielle(cylindre, 0.5, 0.5, 3)
-    triangle = affinite_vectorielle(triangle, 1, 6, 4)
-    triangle = homothetie(triangle, 0.15)
-    
-    # Placer le triangle en haut et à gauche du cylindre
-    deplacement_en_y = max(cylindre[1][:,1])
-    deplacement_en_z = max(cylindre[1][:,2])-(max(triangle[1][:,2])-min(triangle[1][:,2]))
-    deplacement_triangle = np.array([0, deplacement_en_y, deplacement_en_z])
-    triangle = translation(triangle, deplacement_triangle)
-    
-    drapeau = fusion((cylindre, triangle))
-    drapeau = homothetie(drapeau, grandissement)
-    
-    return drapeau
-
-def fonction_satellite(cube, x, y, grandissement):
-    rectangles = repetition_rectiligne(affinite_vectorielle(cube, 0.5, 1.5, 0.2), 4, 1)
-
-    aile_sup = translation(centrer(rectangles), np.array([0, 0.9, 0])) # les 4 panneaux supérieurs de l'aile
-    aile_mid = centrer(affinite_vectorielle(cube, 5, 0.4, 0.5)) # centre de l'aile
-    aile_mid = translation(aile_mid,np.array([0.5, 0, -0.2]))
-    aile_inf = translation(centrer(rectangles), np.array([0, -0.9, 0])) # les 4 panneaux inférieurs de l'aile
-
-    aile_1 = fusion((aile_sup, aile_mid, aile_inf)) # une des ailes du satellite
-    aile_2 = translation(rotation(aile_1, np.pi, [0, 0, 1]),np.array([7, 0, 0]))  # la deuxième aile du satellite
-    centre = centrer(affinite_vectorielle(cube, 2, 2.5, 2)) # Centre satellite
-    centre = translation(centre, np.array([3.5, 0, -0.8]))
-
-    satellite = homothetie(fusion((aile_1, aile_2, centre)), grandissement)
-    satellite = translation(satellite, np.array([x, y, 0]))
-    
-    return satellite
-
-def minion_drapeau(drapeau, minion, grandissement): # fusion de l'objet drapeau et l'objet minion
-    drapeau = centrer(drapeau)
-    drapeau = translation(drapeau, np.array([0, -2, 0])) # translation de 2 unités vers les y négatifs
-    drapeau = translation(drapeau, np.array([0, 0, -1])) # translation de 1 unitées vers les z négatifs
-    minion = centrer(homothetie(minion, grandissement))
-    minion_drapeau = fusion((drapeau, minion)) # fusion des deux objets et création du fichier "minion_drapeau.stl"
-    
-    return minion_drapeau
-    
-    
-def planete_colonisee(minion_drapeau, planete): # fusion de l'objet minion_drapeau et de la planète à coloniser
-    minion_drapeau = homothetie(minion_drapeau, 20)
-    planete = translation(planete, np.array([0, 0, -(max(planete[1][:,2])-min(planete[1][:,2]))/2])) # translation vers z négatifs de la longueur du rayon
-    planete_colonisee = fusion((minion_drapeau, planete)) # fusion des deux objets et création du fichier "planete_colonisee.stl"
-    
-    return planete_colonisee

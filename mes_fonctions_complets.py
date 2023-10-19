@@ -156,6 +156,103 @@ def rep_perso(nb_rep, autre_objet, objet_central, grandissement_central):
         objet_final[1] = np.vstack((objet_final[1], objet[1]*i/m + 110*position[i])) 
         objet_final[2] = np.vstack((objet_final[2], objet[2])) 
     return objet_final
+def spirale_perso(mini_planete,nbre_planete,nbre_planete_secondaire):
+    nb_rep=nbre_planete
+    nb_seconde_planete=nbre_planete_secondaire
+    mini=mini_planete.copy()
+    nb_passage=nb_rep-1
+    thmax=90*nb_passage
+    nb_passage_planete=int(nb_seconde_planete/nb_passage)
+    int_th=thmax/nb_seconde_planete
+
+    i = 0
+    j = 1
+    a = 0
+    res = np.array([0])
+
+    ppmm = np.array([1,1,-1,-1])
+    ppmmtot = np.array([1,1,-1,-1])
+    pmmp = np.array([1,-1,-1,1])
+    pmmptot = np.array([1,-1,-1,1])
+
+     # matrice pour créer la rotation dans les 4 quadrants
+    while len(pmmptot) < nb_rep: #Pour créer la suite +--+ pour x
+         pmmptot = np.hstack([pmmptot,pmmp])
+    while len(ppmmtot) < nb_rep: #Pour créer la suite ++-- pour y
+         ppmmtot = np.hstack([ppmmtot,ppmm])
+
+    while a < nb_rep: 
+         k = np.array([i+j])
+         res = np.hstack([res,k])
+         j = i
+         i = res[-1]
+         a += 1
+
+
+    allo=res[1:]
+    racine=[]
+    x=[]
+    y=[]
+    px=[]
+    py=[]
+    for i in range(len(allo)):
+        a=np.sqrt(2*allo[i]**2)
+        racine.append(a)
+    for o in range(len(allo)):
+        xi = racine[o]*pmmptot[o]
+        x.append(xi)
+        yi = racine[o]*ppmmtot[o]
+        y.append(yi)
+    for i in range(len(allo)):
+        if i % 2==0:
+            px.append(x[i])
+            py.append(0)
+        else:
+            py.append(y[i])
+            px.append(0)
+    
+
+    nb_vertexmini=len(mini[1])
+
+    mini_final=[np.empty([0,3]), np.empty([0,3]), np.empty([0,3])]
+    i=0
+    j=0
+    ptot=[]
+    atot=[]
+    btot=[]
+    while i<(len(racine)-1):
+        
+        a=abs(px[i+1]-px[i])
+        b=abs(py[i+1]-py[i])
+        at=a.copy()
+        bt=b.copy()
+        for j in range(nb_passage_planete):
+            atot.append(at)
+            btot.append(bt)
+        i=i+1
+
+    xp=[]
+    yp=[]
+    zp=[]
+    mini=homothetie(mini, 1/10)
+    
+    for i in range(nb_seconde_planete):
+        th=int_th*i*np.pi/180
+        xp.append(atot[i]*np.cos(th)) 
+        yp.append(btot[i]*np.sin(th)) 
+        zp.append(0)
+    po=np.vstack([xp,yp,zp]).T
+    nb_vertexmini=len(mini[1])
+
+    mini_final=[np.empty([0,3]), np.empty([0,3]), np.empty([0,3])]
+    for i in range(nb_seconde_planete):
+        objet=mini
+        
+        mini_final[0] = np.vstack((mini_final[0], objet[0]+ nb_vertexmini*i)) # concaténation et ajout de nb_vertex*i sur objet_i[0]
+        mini_final[1] = np.vstack((mini_final[1], objet[1] + 110*po[i])) 
+        mini_final[2] = np.vstack((mini_final[2], objet[2])) 
+    mini_final=rotation(mini_final, 1/4*np.pi, [0,0,1])
+    return mini_final
 
 def fonction_drapeau(cylindre, triangle, grandissement):
     # dimensions

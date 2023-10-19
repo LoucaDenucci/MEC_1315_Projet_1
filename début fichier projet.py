@@ -73,7 +73,26 @@ satellites = rep_circulaire(satellite, 3, np.array([400, 300, 0]), 1)
 galaxy = rep_perso(6, planete_colonisee, planete, 2/3) #Répétition selon la suite de fibonacci
 spirale = spirale_perso(mini_planete, 6, 30)
 
+# Étoiles
+
+triangle1=list(LireSTL('triangle.stl'))
+triangle2= rotation(triangle1, np.pi, [0,1,0])
+triangle2 = translation(triangle2, [0, 0, 1])
+
+triangle1_2 = fusion([triangle1, triangle2])
+triangle1_2 = affinite_vectorielle(triangle1_2, 1, 1.25, 0.25)
+
+triangle3 = rotation(triangle1_2, np.pi, [1,0,0])
+triangle3 = translation(triangle3, [0,0.75,0])
+triangle3 = translation(triangle3, [0,0,0.25])
+
+étoile = fusion([triangle1_2, triangle3])
+étoile = homothetie(étoile, 25)
+étoile = rotation(étoile, np.pi/2, [1,0,0])
+
+étoiles = étoiles_partout(étoile)
+
 # Fusion et export du fichier STL
-scene = fusion([central, anneau_p, anneau_s1, anneau_s2, galaxy, satellites, spirale])
+scene = fusion([central, anneau_p, anneau_s1, anneau_s2, galaxy, satellites, spirale, étoiles])
 f,v,n = scene[0], scene[1], scene[2]
 EcrireSTLASCII('Scene_25.stl', f, v, n)

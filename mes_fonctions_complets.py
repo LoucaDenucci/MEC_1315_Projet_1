@@ -257,3 +257,28 @@ def spirale_perso(mini_planete,nbre_planete,nbre_planete_secondaire):
         mini_final[2] = np.vstack((mini_final[2], objet[2])) 
     mini_final=rotation(mini_final, 1/4*np.pi, [0,0,1])
     return mini_final
+
+
+def étoiles_partout(objet):
+    
+    x = 5*np.array([200, 100, 300, 450, 350, 50, 900, 550, 250, 600])
+    y = 5*np.array([100, 500, 200, 650, 480, 654, 345, 678, 543, 900])
+    z = 5*np.array([600, 200, 340, 657, 789, 543, 567, 977, 123, 456])
+
+    coordonnees = [[1, 1, 1],
+                   [-1, 1, 1],
+                   [-1, -1, 1],
+                   [-1, -1, -1],
+                   [1, -1, -1],
+                   [1, 1 , -1],
+                   [1, -1, 1],
+                   [-1, 1, -1]]
+
+
+
+    étoiles = [np.empty([0,3]), np.empty([0,3]), np.empty([0,3])]
+    for cadran in coordonnees:
+        for n in range(0, len(x)):
+            étoiles_n = translation(objet, [cadran[0]*x[n], cadran[1]*y[n], cadran[2]*z[n]])
+            étoiles = fusion([étoiles, étoiles_n])
+    return étoiles

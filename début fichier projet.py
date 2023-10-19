@@ -16,7 +16,9 @@ cylindre=list(LireSTL('cylindre.stl'))
 triangle=list(LireSTL('triangle.stl'))
 mini_planete=list(LireSTL('mini_planete.stl'))
 cube=list(LireSTL('cube.stl'))
+#planete_principal
 
+central=homothetie(planete, 2/3)
 
 # Anneaux
 anneau_p = rep_circulaire(rotation(cylindre, np.pi/2,[1,0,0]), 150, np.array([135, 0, 0]), 7) # Répétition circulaire
@@ -72,8 +74,9 @@ satellite = translation(satellite, np.array([-300, 300, 0]))
 
 #Galaxy 
 galaxy=rep_perso(6, planete_colonisee, planete, 2/3) #Répétition selon la suite de fibonacci
+spirale=spirale_perso(mini_planete, 6, 30)
 
 # fusion et export du fichier STL
-scene = fusion([anneau_p, anneau_s1, anneau_s2, galaxy, satellite])
+scene = fusion([central,anneau_p, anneau_s1, anneau_s2, galaxy, satellite,spirale])
 f,v,n = scene[0], scene[1], scene[2]
 EcrireSTLASCII('scene_final_XX.stl', f, v, n)

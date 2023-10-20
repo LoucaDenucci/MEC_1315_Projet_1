@@ -238,7 +238,7 @@ def spirale_perso(mini_planete,nbre_planete,nbre_planete_secondaire):
     xp=[]
     yp=[]
     zp=[]
-    mini=homothetie(mini, 1/10)
+    mini=homothetie(mini, 1/7.5)
     
     for i in range(nb_seconde_planete):
         th=int_th*i*np.pi/180

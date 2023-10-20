@@ -87,7 +87,7 @@ triangle3 = translation(triangle3, [0,0.75,0])
 triangle3 = translation(triangle3, [0,0,0.25])
 
 étoile = fusion([triangle1_2, triangle3])
-étoile = homothetie(étoile, 25)
+étoile = homothetie(étoile, 50)
 étoile = rotation(étoile, np.pi/2, [1,0,0])
 
 étoiles = étoiles_partout(étoile)

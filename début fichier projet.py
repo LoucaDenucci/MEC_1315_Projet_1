@@ -70,8 +70,8 @@ satellite = rotation(satellite,np.pi/8,[0,1,0])
 satellites = rep_circulaire(satellite, 3, np.array([400, 300, 0]), 1)
 
 # Galaxy 
-galaxy = rep_perso(6, planete_colonisee, planete, 2/3) #Répétition selon la suite de fibonacci
-spirale = spirale_perso(mini_planete, 6, 30)
+galaxy = rep_perso(8, planete_colonisee, planete, 2/3) #Répétition selon la suite de fibonacci
+spirale = spirale_perso(mini_planete, 8, 48)
 
 # Étoiles
 

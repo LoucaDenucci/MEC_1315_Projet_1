@@ -92,7 +92,55 @@ triangle3 = translation(triangle3, [0,0,0.25])
 
 étoiles = étoiles_partout(étoile)
 
+# Fusée avec minion
+
+    # création pointe de la fusée
+
+minion=list(LireSTL('Minion2.stl'))
+cylindre=list(LireSTL('cylindre.stl'))
+triangle=list(LireSTL('triangle.stl'))
+
+cone = translation(triangle, [-1,0,0])
+cone = rotation(cone, np.pi/2, [0,1,0])
+cone = rotation(cone, -np.pi/2/2, [1,0,0])
+cone = translation(cone, [-0.5,0,0])
+cone = translation(cone, [0,-(2**(1/2)/2),0])
+reacteur = copy.deepcopy(cone) # cette copy sera utilisée lors de la création des réacteurs
+cone = affinite_vectorielle(cone, 0.001, 1, 1)
+cone = rep_circulaire(cone, 200, [0,0,0], 1)
+cone = homothetie(cone, 1.25)
+
+
+    # création corp de la fusée
+
+cylindre = translation(cylindre, [0,0,-1])
+cylindre = rep_circulaire(cylindre, 100, [0,0,0], 1)
+cylindre = affinite_vectorielle(cylindre, 1, 1, 3)
+
+
+    # création des réacteurs
+
+reacteur = homothetie(reacteur, 2)
+reacteur = translation(reacteur, [0,0,-3.5])
+reacteur = affinite_vectorielle(reacteur, 0.1, 1, 1)
+reacteur = rep_circulaire(reacteur, 3, [0,0,0], 1)
+
+    # ajout de minion sur fusée
+
+minion = homothetie(minion, 1/30)
+minion = centrer(minion)
+minion = rotation(minion, np.pi/2, [0,1,0])
+minion = rotation(minion, -np.pi/2, [1,0,0])
+minion = translation(minion, [0,0,-1])
+
+# création de l'objet fusee
+
+fusee = fusion([cone, cylindre, reacteur, minion])
+fusee = homothetie(fusee, 20)
+fusee = rotation(fusee, -np.pi/2, [0,1,0])
+fusee = translation(fusee, [0,0,500])
+
 # Fusion et export du fichier STL
-scene = fusion([central, anneau_p, anneau_s1, anneau_s2, galaxy, satellites, spirale, étoiles])
+scene = fusion([central, anneau_p, anneau_s1, anneau_s2, galaxy, satellites, spirale, étoiles, fusee])
 f,v,n = scene[0], scene[1], scene[2]
 EcrireSTLASCII('Scene_25.stl', f, v, n)
